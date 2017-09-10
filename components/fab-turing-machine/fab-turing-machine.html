@@ -1,5 +1,5 @@
-<link rel="import" href="../polymer/polymer-element.html">
-<link rel="import" href="fab-ui-led.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../fab-ui-led/fab-ui-led.html">
 
 <dom-module id="fab-turing-machine">
   <template>
@@ -11,7 +11,9 @@
         font-family: monospace;
       }
     </style>
+        <h1>Turing macine</h1>
         <!-- gates -->
+        <h2>Gates</h2>
         <div>
             <dom-repeat>
                 <template is="dom-repeat" items="[[gates]]">
@@ -21,6 +23,7 @@
         </div>
         <br>
         <!-- notes -->
+        <h2>Notes</h2>
         <div>
             <dom-repeat>
                 <template is="dom-repeat" items="[[notes]]">
@@ -30,14 +33,17 @@
         </div>
         <br>
         <!-- gate and note output -->
+        <h2>Outputs</h2>
         <fab-ui-led red="[[pulse]]"></fab-ui-led>
         <fab-ui-led green="[[note]]"></fab-ui-led>
         <br>
 
         <!-- chance to invert -->
+        <h2>Chance to keep</h2>
         <input type="range" value$="[[bigKnob]]" min="0" max="1" step="0.001" on-input="_changeBigKnob" style="width: 90%;">
         <br>
         <!-- length -->
+        <h2>Sequence Length</h2>
         <template is="dom-repeat" items="[[_availableLengths]]">
             <a on-tap="_changeLength">
                 <dom-if>
@@ -52,12 +58,12 @@
                 </dom-if>
             </a>
         </template>
-
         <br>
+        <h2>Manual write</h2>
         <button type="button" on-mousedown="_tapWrite" value="0">0</button>
         <button type="button" on-mousedown="_tapWrite" value="1">1</button>
-
         <br>
+        <h2>Scale</h2>
         <input type="range" value$="[[scale]]" min="0" max="1" step="0.001" on-input="_changeScale">
   </template>
 
@@ -103,11 +109,13 @@
                 /** OUTPUTS **/
                 pulse: {
                     type: Number,
-                    computed: '_computePulse(clock, gates.0)'
+                    computed: '_computePulse(clock, gates.0)',
+                    notify: true
                 },
                 note: {
                     type: Number,
-                    computed: '_computeNote(notes.0)'
+                    computed: '_computeNote(notes.0)',
+                    notify: true
                 },
                 /** INTERNALS (can be used both as input or output) */
                 currentStep: {

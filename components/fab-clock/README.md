@@ -1,6 +1,6 @@
-# \<fab-midi-out\>
+# \<fab-clock\>
 
-Outputs midi info
+Clock generator
 
 ## Install the Polymer-CLI
 
@@ -19,8 +19,3 @@ $ polymer test
 ```
 
 Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
-
-## TODO
-- Midi clock
-- Midi input
-- Select multiple outputs

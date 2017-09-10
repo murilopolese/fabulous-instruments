@@ -1,4 +1,4 @@
-<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
 
 <dom-module id="fab-midi-out">
     <template>
@@ -10,7 +10,7 @@
             font-family: monospace;
         }
         </style>
-        <h2>Midi out</h2>
+        <h1>Midi out</h1>
         <dom-repeater>
             <template is="dom-repeat" items="[[_outputs]]">
                 <div>
@@ -29,11 +29,9 @@
         <br>
         <h2>Initial note</h2>
         <input type="range" value$="[[initialNote]]" min="0" max="1" step="0.001" on-input="_changeInitialNote" style="width: 90%;">
-        <p>[[initialNote]]</p>
         <br>
         <h2>Range</h2>
         <input type="range" value$="[[range]]" min="0" max="1" step="0.001" on-input="_changeRange" style="width: 90%;">
-        <p>[[range]]</p>
         <br>
         <h2>Events</h2>
         <dom-repeater>
@@ -64,28 +62,20 @@
                     /** INPUTS */
                     gate: {
                         type: Number,
-                        value: () => {
-                            return 0;
-                        },
+                        value: 0,
                         observer: '_observeGate'
                     },
                     note: {
                         type: Number,
-                        value: () => {
-                            return 0;
-                        }
+                        value: 0
                     },
                     initialNote: {
                         type: Number,
-                        value: () => {
-                            return 0;
-                        }
+                        value: 0
                     },
                     range: {
                         type: Number,
-                        value: () => {
-                            return 1;
-                        }
+                        value: 1
                     },
                     /** PRIVATE */
                     _note: {
@@ -102,9 +92,7 @@
                     },
                     _events: {
                         type: Array,
-                        value: () => {
-                            return []
-                        }
+                        value: () => []
                     }
                 };
             }
@@ -141,24 +129,20 @@
                 }
                 switch (type) {
                     case 'noteOn':
-                        midiMessage = [144, note, velocity];
-                        eventIndex = this._events.findIndex((e) => {
-                            return e[0] === 144 && e[1] === midiMessage[1];
+                        midiMessage = [144, note, parseInt(velocity*127)];
+                        this._events.forEach((e) => {
+                            // Release all notes
+                            output.send([ 128, e[1], e[2] ]);
                         });
-                        if (eventIndex === -1) {
-                            output.send(midiMessage);
-                            this.push('_events', midiMessage);
-                        }
+                        output.send(midiMessage);
+                        this.push('_events', midiMessage);
                         break;
                     case 'noteOff':
-                        midiMessage = [128, note, velocity];
-                        eventIndex = this._events.findIndex((e) => {
-                            return e[0] === 144 && e[1] === midiMessage[1];
+                        this._events.forEach((e) => {
+                            // Release all notes
+                            output.send([ 128, e[1], e[2] ]);
                         });
-                        if (eventIndex !== -1) {
-                            this.splice('_events', eventIndex, 1);
-                        }
-                        output.send(midiMessage);
+                        this.set('_events', []);
                         break;
                     default:
                 }
