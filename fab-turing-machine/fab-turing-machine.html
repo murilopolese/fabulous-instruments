@@ -1,74 +1,64 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="fab-ui-led.html">
 
 <dom-module id="fab-turing-machine">
   <template>
     <style>
       :host {
         display: block;
+        width: 340px;
+        font-size: 10px;
+        font-family: monospace;
       }
     </style>
-
-        <h1>Turing Machine</h1>
-        <!-- <h2>Clock</h2>
-        <button type="button" on-tap="clockTick" >Clock</button>
-        <input type="range" value$="[[clock]]" min="0" max="1" step="0.001" on-input="_changeClock"> -->
-        <h2>Steps</h2>
-        <p>Current Step: [[currentStep]]</p>
-
+        <!-- gates -->
         <div>
             <dom-repeat>
                 <template is="dom-repeat" items="[[gates]]">
-                    <dom-if>
-                        <template is="dom-if" if="[[item]]" restamp>
-                            x
-                        </template>
-                        <template is="dom-if" if="[[!item]]" restamp>
-                            0
-                        </template>
-                    </dom-if>
+                    <fab-ui-led red="[[item]]"></fab-ui-led>
                 </template>
             </dom-repeat>
         </div>
-
+        <br>
+        <!-- notes -->
         <div>
             <dom-repeat>
                 <template is="dom-repeat" items="[[notes]]">
-                    <div style$="float: left; width: 25px; height: 25px; background: black; opacity: [[item]]"></div>
+                    <fab-ui-led green="[[item]]"></fab-ui-led>
                 </template>
             </dom-repeat>
-        </div><br>
+        </div>
+        <br>
+        <!-- gate and note output -->
+        <fab-ui-led red="[[pulse]]"></fab-ui-led>
+        <fab-ui-led green="[[note]]"></fab-ui-led>
+        <br>
 
-        <h2>Big knob</h2>
-        <input type="range" value$="[[bigKnob]]" min="0" max="1" step="0.001" on-input="_changeBigKnob">
-        <div id="bigknobvalue">[[bigKnob]]</div>
-
-        <h2>Length</h2>
+        <!-- chance to invert -->
+        <input type="range" value$="[[bigKnob]]" min="0" max="1" step="0.001" on-input="_changeBigKnob" style="width: 90%;">
+        <br>
+        <!-- length -->
         <template is="dom-repeat" items="[[_availableLengths]]">
-            <div on-tap="_changeLength">
-            <dom-if>
-                <template is="dom-if" if="[[_isLengthChecked(length, item)]]" restamp>
-                    <input type="radio" name="length" value="[[item]]" checked> [[item]]
-                </template>
-            </dom-if>
-            <dom-if>
-                <template is="dom-if" if="[[!_isLengthChecked(length, item)]]" restamp>
-                    <input type="radio" name="length" value="[[item]]"> [[item]]
-                </template>
-            </dom-if>
-            </div>
+            <a on-tap="_changeLength">
+                <dom-if>
+                    <template is="dom-if" if="[[_isLengthChecked(length, item)]]" restamp>
+                        <input type="radio" name="length" value="[[item]]" checked> [[item]]
+                    </template>
+                </dom-if>
+                <dom-if>
+                    <template is="dom-if" if="[[!_isLengthChecked(length, item)]]" restamp>
+                        <input type="radio" name="length" value="[[item]]"> [[item]]
+                    </template>
+                </dom-if>
+            </a>
         </template>
 
-        <h2>Write</h2>
-        <button type="button" on-mousedown="_tapWrite" value="0">Write off</button>
-        <button type="button" on-mousedown="_tapWrite" value="1">Write on</button>
+        <br>
+        <button type="button" on-mousedown="_tapWrite" value="0">0</button>
+        <button type="button" on-mousedown="_tapWrite" value="1">1</button>
 
-        <h2>Scale</h2>
+        <br>
         <input type="range" value$="[[scale]]" min="0" max="1" step="0.001" on-input="_changeScale">
-        <div id="bigknobvalue">[[scale]]</div>
-
-        <h2>Outputs</h2>
-        <p>pulse: [[pulse]]</p>
-        <p>note: [[note]]</p>
   </template>
 
   <script>
@@ -84,6 +74,13 @@
         static get is() { return 'fab-turing-machine'; }
         static get properties() {
             return {
+                clock: {
+                    type: Number,
+                    value: () => {
+                        return 0;
+                    },
+                    observer: '_observeClock'
+                },
                 currentStep: {
                     type: Number,
                     value: () => {
@@ -94,10 +91,10 @@
                     type: Array,
                     value: () => {
                         return [
-                            false, false, false, false,
-                            false, false, false, false,
-                            false, false, false, false,
-                            false, false, false, false
+                            Math.random(), Math.random(), Math.random(), Math.random(),
+                            Math.random(), Math.random(), Math.random(), Math.random(),
+                            Math.random(), Math.random(), Math.random(), Math.random(),
+                            Math.random(), Math.random(), Math.random(), Math.random()
                         ]
                     }
                 },
@@ -118,12 +115,17 @@
                         return 1;
                     }
                 },
-                clock: {
+                length: {
                     type: Number,
                     value: () => {
-                        return 0;
-                    },
-                    observer: '_observeClock'
+                        return 0.6;
+                    }
+                },
+                scale: {
+                    type: Number,
+                    value: () => {
+                        return 1;
+                    }
                 },
                 pulse: {
                     type: Number,
@@ -132,12 +134,6 @@
                 note: {
                     type: Number,
                     computed: '_computeNote(notes.0)'
-                },
-                scale: {
-                    type: Number,
-                    value: () => {
-                        return 1;
-                    }
                 },
                 _availableLengths: {
                     type: Array,
@@ -149,12 +145,6 @@
                     type: Number,
                     computed: '_computeLengthStep(_availableLengths.length)'
                 },
-                length: {
-                    type: Number,
-                    value: () => {
-                        return 0.6;
-                    }
-                }
             }
         }
         connectedCallback () {
@@ -180,7 +170,11 @@
 
             /** change */
             if (random > chanceToKeep) {
-                this.writeGate(!currentGate);
+                if (currentGate < 0.5) {
+                    this.writeGate(1);
+                } else {
+                    this.writeGate(0);
+                }
                 this.writeNote(Math.random());
             }
 
@@ -194,7 +188,7 @@
             this.push('notes', this.notes[sampleIndex]);
             this.shift('notes');
             this.notifyPath('notes.0')
-            
+
             /** Increment `currentStep` */
             this.set('currentStep',
                 (this.currentStep + 1) % seqLength
@@ -211,8 +205,7 @@
 
         /** Event handlers */
         _tapWrite (e) {
-            let value = e.path[0].value == 1;
-            this.writeGate(value);
+            this.writeGate(e.path[0].value);
         }
         _changeBigKnob (e) {
             this.set('bigKnob', e.path[0].value)
@@ -235,7 +228,11 @@
             /**
              * This will make the gate lentgh to be the same as the clock length
              */
-            return clock === 1 && currentGate;
+            if (clock === 1 && currentGate > 0.5) {
+                return 1;
+            } else {
+                return 0;
+            }
         }
         _computeNote (currentNote) {
             return currentNote * this.scale;

@@ -1,0 +1,66 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+
+<dom-module id="fab-ui-led">
+  <template>
+    <style>
+      :host {
+          display: inline-block;
+      }
+      #led {
+          width: 15px;
+          height: 15px;
+          border-radius: 15px;
+          float: left;
+      }
+    </style>
+    <div id="led" style$="background: rgb([[_red]], [[_green]], [[_blue]])"></div>
+  </template>
+
+  <script>
+    /**
+     * `fab-ui-led`
+     * Fabulous led
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class FabUILed extends Polymer.Element {
+        static get is() { return 'fab-ui-led'; }
+        static get properties() {
+            return {
+                red: {
+                    type: Number,
+                    value: 0
+                },
+                green: {
+                    type: Number,
+                    value: 0
+                },
+                blue: {
+                    type: Number,
+                    value: 0
+                },
+                _red: {
+                    type: Number,
+                    computed: '_calculateColor(red)'
+                },
+                _green: {
+                    type: Number,
+                    computed: '_calculateColor(green)'
+                },
+                _blue: {
+                    type: Number,
+                    computed: '_calculateColor(blue)'
+                },
+            }
+        }
+        _calculateColor (color) {
+            return parseInt(color * 255);
+        }
+    }
+
+    window.customElements.define(FabUILed.is, FabUILed);
+  </script>
+</dom-module>
