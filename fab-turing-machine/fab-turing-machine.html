@@ -74,6 +74,7 @@
         static get is() { return 'fab-turing-machine'; }
         static get properties() {
             return {
+                /** INPUTS **/
                 clock: {
                     type: Number,
                     value: () => {
@@ -81,6 +82,34 @@
                     },
                     observer: '_observeClock'
                 },
+                bigKnob: {
+                    type: Number,
+                    value: () => {
+                        return 1;
+                    }
+                },
+                length: {
+                    type: Number,
+                    value: () => {
+                        return 0;
+                    }
+                },
+                scale: {
+                    type: Number,
+                    value: () => {
+                        return 1;
+                    }
+                },
+                /** OUTPUTS **/
+                pulse: {
+                    type: Number,
+                    computed: '_computePulse(clock, gates.0)'
+                },
+                note: {
+                    type: Number,
+                    computed: '_computeNote(notes.0)'
+                },
+                /** INTERNALS (can be used both as input or output) */
                 currentStep: {
                     type: Number,
                     value: () => {
@@ -109,32 +138,7 @@
                         ]
                     }
                 },
-                bigKnob: {
-                    type: Number,
-                    value: () => {
-                        return 1;
-                    }
-                },
-                length: {
-                    type: Number,
-                    value: () => {
-                        return 0;
-                    }
-                },
-                scale: {
-                    type: Number,
-                    value: () => {
-                        return 1;
-                    }
-                },
-                pulse: {
-                    type: Number,
-                    computed: '_computePulse(clock, gates.0)'
-                },
-                note: {
-                    type: Number,
-                    computed: '_computeNote(notes.0)'
-                },
+                /** PRIVATE **/
                 _availableLengths: {
                     type: Array,
                     value: () => {

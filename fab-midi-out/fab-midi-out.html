@@ -1,0 +1,201 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="fab-midi-out">
+    <template>
+        <style>
+        :host {
+            display: block;
+            width: 340px;
+            font-size: 10px;
+            font-family: monospace;
+        }
+        </style>
+        <h2>Midi out</h2>
+        <dom-repeater>
+            <template is="dom-repeat" items="[[_outputs]]">
+                <div>
+                    <p>
+                        <button on-tap="_onSelectOutput">Select</button>
+                        [[item.name]]
+                        <dom-if>
+                            <template is="dom-if" if="[[_isSelected(item, _selectedOutput)]]">
+                                - selected
+                            </template>
+                        </dom-if>
+                    </p>
+                </div>
+            </template>
+        </dom-repeater>
+        <br>
+        <h2>Initial note</h2>
+        <input type="range" value$="[[initialNote]]" min="0" max="1" step="0.001" on-input="_changeInitialNote" style="width: 90%;">
+        <p>[[initialNote]]</p>
+        <br>
+        <h2>Range</h2>
+        <input type="range" value$="[[range]]" min="0" max="1" step="0.001" on-input="_changeRange" style="width: 90%;">
+        <p>[[range]]</p>
+        <br>
+        <h2>Events</h2>
+        <dom-repeater>
+            <template is="dom-repeat" items="[[_events]]">
+                <div>
+                    <p>
+                        [ [[item.0]], [[item.1]], [[item.2]] ]
+                        <button on-tap="_removeEvent">x</button>
+                    </p>
+                </div>
+            </template>
+        </dom-repeater>
+    </template>
+
+    <script>
+        /**
+        * `fab-midi-out`
+        * Outputs midi info
+        *
+        * @customElement
+        * @polymer
+        * @demo demo/index.html
+        */
+        class FabMidiOut extends Polymer.GestureEventListeners(Polymer.Element) {
+            static get is() { return 'fab-midi-out'; }
+            static get properties() {
+                return {
+                    /** INPUTS */
+                    gate: {
+                        type: Number,
+                        value: () => {
+                            return 0;
+                        },
+                        observer: '_observeGate'
+                    },
+                    note: {
+                        type: Number,
+                        value: () => {
+                            return 0;
+                        }
+                    },
+                    initialNote: {
+                        type: Number,
+                        value: () => {
+                            return 0;
+                        }
+                    },
+                    range: {
+                        type: Number,
+                        value: () => {
+                            return 1;
+                        }
+                    },
+                    /** PRIVATE */
+                    _note: {
+                        type: Number,
+                        computed: '_computeNote(note, initialNote, range)'
+                    },
+                    _outputs: {
+                        type: Array,
+                        value: () => []
+                    },
+                    _selectedOutput: {
+                        type: Number,
+                        value: null
+                    },
+                    _events: {
+                        type: Array,
+                        value: () => {
+                            return []
+                        }
+                    }
+                };
+            }
+            connectedCallback () {
+                super.connectedCallback();
+                console.log('Midi out started');
+                navigator.requestMIDIAccess()
+                    .then((midiAccess) => {
+                        let outputs = midiAccess.outputs.values();
+                        for (
+                            var output = outputs.next();
+                            output && !output.done;
+                            output = outputs.next()
+                        ) {
+                            this.push('_outputs', output.value);
+                        }
+                    })
+                    .catch((e) => {
+                        console.log('error', e);
+                    });
+            }
+            noteOn (note, velocity) {
+                this._midiMessage('noteOn', note, velocity);
+            }
+            noteOff (note, velocity) {
+                this._midiMessage('noteOff', note, velocity);
+            }
+            _midiMessage (type, note, velocity) {
+                let output = this._outputs[this._selectedOutput],
+                    eventIndex = -1,
+                    midiMessage = [];
+                if (!output) {
+                    return false;
+                }
+                switch (type) {
+                    case 'noteOn':
+                        midiMessage = [144, note, velocity];
+                        eventIndex = this._events.findIndex((e) => {
+                            return e[0] === 144 && e[1] === midiMessage[1];
+                        });
+                        if (eventIndex === -1) {
+                            output.send(midiMessage);
+                            this.push('_events', midiMessage);
+                        }
+                        break;
+                    case 'noteOff':
+                        midiMessage = [128, note, velocity];
+                        eventIndex = this._events.findIndex((e) => {
+                            return e[0] === 144 && e[1] === midiMessage[1];
+                        });
+                        if (eventIndex !== -1) {
+                            this.splice('_events', eventIndex, 1);
+                        }
+                        output.send(midiMessage);
+                        break;
+                    default:
+                }
+            }
+            _computeNote (note, initialNote, range) {
+                let _initialNote = parseInt(initialNote * 127),
+                    _note = _initialNote + parseInt(note * range * 127);
+                _note = Math.max(_note, 0);
+                _note = Math.min(_note, 127);
+                return _note;
+            }
+            _observeGate (current, previous) {
+                if (current > 0.5) {
+                    this.noteOn(this._note, current);
+                } else {
+                    this.noteOff(this._note, current);
+                }
+            }
+            _isSelected (output, selectedOutput) {
+                return this._outputs.indexOf(output) === selectedOutput;
+            }
+            _removeEvent (e) {
+                let midiMessage = this._events[e.model.index];
+                this.noteOff(midiMessage[1], midiMessage[2]);
+                this.splice('_events', e.model.index, 1);
+            }
+            _onSelectOutput (e) {
+                this.set('_selectedOutput', e.model.index);
+            }
+            _changeInitialNote (e) {
+                this.set('initialNote', e.path[0].value);
+            }
+            _changeRange (e) {
+                this.set('range', e.path[0].value);
+            }
+        }
+
+        window.customElements.define(FabMidiOut.is, FabMidiOut);
+    </script>
+</dom-module>

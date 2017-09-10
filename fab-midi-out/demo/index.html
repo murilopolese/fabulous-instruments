@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>fab-midi-out demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../fab-midi-out.html">
+
+    <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+</custom-style>
+</head>
+<body>
+    <div class="vertical-section-container centered">
+        <h3>Basic fab-midi-out demo</h3>
+        <demo-snippet>
+            <template>
+                <fab-midi-out></fab-midi-out>
+                <br>
+                <h2>Test</h2>
+                <div>
+                    <button id="testGate">test gate</button>
+                    <button id="testNote">test note</button>
+                </div>
+                <br>
+                <script type="text/javascript">
+                    let midiOut = document.querySelector('fab-midi-out'),
+                    testGate = document.querySelector('#testGate'),
+                    testNote = document.querySelector('#testNote'),
+                    _testGate = () => {
+                        midiOut.set('gate', 1);
+                        setTimeout(() => {
+                            midiOut.set('gate', 0);
+                        }, 500)
+                    },
+                    _testNote = () => {
+                        midiOut.set('note', Math.random());
+                    };
+                    testGate.addEventListener('click', _testGate);
+                    testGate.addEventListener('tap', _testGate);
+                    testNote.addEventListener('click', _testNote);
+                    testNote.addEventListener('tap', _testNote);
+                </script>
+            </template>
+        </demo-snippet>
+    </div>
+</body>
+</html>
