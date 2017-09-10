@@ -1,0 +1,265 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="fab-turing-machine">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+        <h1>Turing Machine</h1>
+        <!-- <h2>Clock</h2>
+        <button type="button" on-tap="clockTick" >Clock</button>
+        <input type="range" value$="[[clock]]" min="0" max="1" step="0.001" on-input="_changeClock"> -->
+        <h2>Steps</h2>
+        <p>Current Step: [[currentStep]]</p>
+
+        <div>
+            <dom-repeat>
+                <template is="dom-repeat" items="[[gates]]">
+                    <dom-if>
+                        <template is="dom-if" if="[[item]]" restamp>
+                            x
+                        </template>
+                        <template is="dom-if" if="[[!item]]" restamp>
+                            0
+                        </template>
+                    </dom-if>
+                </template>
+            </dom-repeat>
+        </div>
+
+        <div>
+            <dom-repeat>
+                <template is="dom-repeat" items="[[notes]]">
+                    <div style$="float: left; width: 25px; height: 25px; background: black; opacity: [[item]]"></div>
+                </template>
+            </dom-repeat>
+        </div><br>
+
+        <h2>Big knob</h2>
+        <input type="range" value$="[[bigKnob]]" min="0" max="1" step="0.001" on-input="_changeBigKnob">
+        <div id="bigknobvalue">[[bigKnob]]</div>
+
+        <h2>Length</h2>
+        <template is="dom-repeat" items="[[_availableLengths]]">
+            <div on-tap="_changeLength">
+            <dom-if>
+                <template is="dom-if" if="[[_isLengthChecked(length, item)]]" restamp>
+                    <input type="radio" name="length" value="[[item]]" checked> [[item]]
+                </template>
+            </dom-if>
+            <dom-if>
+                <template is="dom-if" if="[[!_isLengthChecked(length, item)]]" restamp>
+                    <input type="radio" name="length" value="[[item]]"> [[item]]
+                </template>
+            </dom-if>
+            </div>
+        </template>
+
+        <h2>Write</h2>
+        <button type="button" on-mousedown="_tapWrite" value="0">Write off</button>
+        <button type="button" on-mousedown="_tapWrite" value="1">Write on</button>
+
+        <h2>Scale</h2>
+        <input type="range" value$="[[scale]]" min="0" max="1" step="0.001" on-input="_changeScale">
+        <div id="bigknobvalue">[[scale]]</div>
+
+        <h2>Outputs</h2>
+        <p>pulse: [[pulse]]</p>
+        <p>note: [[note]]</p>
+  </template>
+
+  <script>
+    /**
+     * `fab-turing-machine`
+     * Turing machine implementation
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class FabTuringMachine extends Polymer.GestureEventListeners(Polymer.Element) {
+        static get is() { return 'fab-turing-machine'; }
+        static get properties() {
+            return {
+                currentStep: {
+                    type: Number,
+                    value: () => {
+                        return 0;
+                    }
+                },
+                gates: {
+                    type: Array,
+                    value: () => {
+                        return [
+                            false, false, false, false,
+                            false, false, false, false,
+                            false, false, false, false,
+                            false, false, false, false
+                        ]
+                    }
+                },
+                notes: {
+                    type: Array,
+                    value: () => {
+                        return [
+                            Math.random(), Math.random(), Math.random(), Math.random(),
+                            Math.random(), Math.random(), Math.random(), Math.random(),
+                            Math.random(), Math.random(), Math.random(), Math.random(),
+                            Math.random(), Math.random(), Math.random(), Math.random()
+                        ]
+                    }
+                },
+                bigKnob: {
+                    type: Number,
+                    value: () => {
+                        return 1;
+                    }
+                },
+                clock: {
+                    type: Number,
+                    value: () => {
+                        return 0;
+                    },
+                    observer: '_observeClock'
+                },
+                pulse: {
+                    type: Number,
+                    computed: '_computePulse(clock, gates.0)'
+                },
+                note: {
+                    type: Number,
+                    computed: '_computeNote(notes.0)'
+                },
+                scale: {
+                    type: Number,
+                    value: () => {
+                        return 1;
+                    }
+                },
+                _availableLengths: {
+                    type: Array,
+                    value: () => {
+                        return [2, 3, 4, 5, 6, 8, 12, 16];
+                    }
+                },
+                _lengthStep: {
+                    type: Number,
+                    computed: '_computeLengthStep(_availableLengths.length)'
+                },
+                length: {
+                    type: Number,
+                    value: () => {
+                        return 0.6;
+                    }
+                }
+            }
+        }
+        connectedCallback () {
+            super.connectedCallback();
+            console.log('Turing machine started');
+            setInterval(() => {
+                if (this.clock > 0.5) {
+                    this.set('clock', 0);
+                } else {
+                    this.set('clock', 1);
+                }
+            }, 150);
+        }
+        clockTick () {
+            /**
+             * If bigKnob is 1 it will never change since random will never be
+             * bigger than 1, if it's 0 it will always invert since random will
+             * always be bigger than 0
+             */
+            let random = Math.random(),
+                chanceToKeep = this.bigKnob,
+                currentGate = this.gates[this.gates.length - 1];
+
+            /** change */
+            if (random > chanceToKeep) {
+                this.writeGate(!currentGate);
+                this.writeNote(Math.random());
+            }
+
+            /** Shift gates and notes */
+            let gatesLength = this.gates.length,
+                seqLength = this._calculateLengthFromAvailable(this.length),
+                sampleIndex = gatesLength - seqLength;
+            this.push('gates', this.gates[sampleIndex]);
+            this.shift('gates');
+            this.notifyPath('gates.0')
+            this.push('notes', this.notes[sampleIndex]);
+            this.shift('notes');
+            this.notifyPath('notes.0')
+            
+            /** Increment `currentStep` */
+            this.set('currentStep',
+                (this.currentStep + 1) % seqLength
+            );
+        }
+        writeGate (value) {
+            let last = this.gates.length -1;
+            this.set(`gates.${last}`, value);
+        }
+        writeNote (value) {
+            let last = this.gates.length -1;
+            this.set(`notes.${last}`, value);
+        }
+
+        /** Event handlers */
+        _tapWrite (e) {
+            let value = e.path[0].value == 1;
+            this.writeGate(value);
+        }
+        _changeBigKnob (e) {
+            this.set('bigKnob', e.path[0].value)
+        }
+        _changeClock (e) {
+            this.set('clock', e.path[0].value)
+        }
+        _changeLength (e) {
+            this.set('length', e.model.index * this._lengthStep);
+        }
+        _changeScale (e) {
+            this.set('scale', e.path[0].value);
+        }
+
+        /** Computed properties */
+        _computeLengthStep (availableLength) {
+            return 1 / availableLength;
+        }
+        _computePulse (clock, currentGate) {
+            /**
+             * This will make the gate lentgh to be the same as the clock length
+             */
+            return clock === 1 && currentGate;
+        }
+        _computeNote (currentNote) {
+            return currentNote * this.scale;
+        }
+
+        /** Observers */
+        _observeClock (current, previous) {
+            if (current == 1 && previous < 1) {
+                this.clockTick();
+            }
+        }
+
+        /** Render helpers */
+        _calculateLengthFromAvailable (length) {
+            let currentStep = Math.ceil( length / this._lengthStep );
+            currentStep = Math.min(currentStep, this._availableLengths.length-1);
+            currentStep = Math.max(currentStep, 0);
+            return this._availableLengths[currentStep];
+        }
+        _isLengthChecked (length, label) {
+            return label == this._calculateLengthFromAvailable(this.length);
+        }
+    }
+
+    window.customElements.define(FabTuringMachine.is, FabTuringMachine);
+  </script>
+</dom-module>
