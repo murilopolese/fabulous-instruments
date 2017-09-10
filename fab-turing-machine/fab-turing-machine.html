@@ -118,7 +118,7 @@
                 length: {
                     type: Number,
                     value: () => {
-                        return 0.6;
+                        return 0;
                     }
                 },
                 scale: {
@@ -150,13 +150,6 @@
         connectedCallback () {
             super.connectedCallback();
             console.log('Turing machine started');
-            setInterval(() => {
-                if (this.clock > 0.5) {
-                    this.set('clock', 0);
-                } else {
-                    this.set('clock', 1);
-                }
-            }, 150);
         }
         clockTick () {
             /**

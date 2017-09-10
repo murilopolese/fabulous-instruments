@@ -23,6 +23,16 @@
       <demo-snippet>
         <template>
           <fab-turing-machine></fab-turing-machine>
+          <script>
+            let machine = document.querySelector('fab-turing-machine')
+            setInterval(() => {
+                if (machine.clock > 0.5) {
+                    machine.set('clock', 0);
+                } else {
+                    machine.set('clock', 1);
+                }
+            }, 150);
+          </script>
         </template>
       </demo-snippet>
     </div>
