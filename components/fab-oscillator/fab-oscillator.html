@@ -1,0 +1,139 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="fab-oscillator">
+    <template>
+    <style>
+    :host {
+        display: block;
+    }
+    </style>
+    <h1>Oscillator</h1>
+    <h2>Osc type</h2>
+    <p>
+        <button type="button" value="sine" on-tap="_changeType">Sine</button>
+        <button type="button" value="square" on-tap="_changeType">Square</button>
+        <button type="button" value="sawtooth" on-tap="_changeType">Saw</button>
+        <button type="button" value="triangle" on-tap="_changeType">Triangle</button>
+    </p>
+    <h2>Initial note</h2>
+    <input type="range" value$="[[initialNote]]" min="0" max="1" step="0.001" on-input="_changeInitialNote" style="width: 90%;">
+    <h2>Note</h2>
+    <input type="range" value$="[[note]]" min="0" max="1" step="0.001" on-input="_changeNote" style="width: 90%;">
+    <h2>Gain</h2>
+    <input type="range" value$="[[gain]]" min="0" max="1" step="0.001" on-input="_changeGain" style="width: 90%;">
+
+</template>
+<script>
+/**
+* `fab-oscillator`
+* Web audio api oscillator
+*
+* @customElement
+* @polymer
+* @demo demo/index.html
+*/
+class FabOscillator extends Polymer.GestureEventListeners(Polymer.Element) {
+    static get is() { return 'fab-oscillator'; }
+    static get properties() {
+        return {
+            /** INPUTS */
+            note: {
+                type: Number,
+                value: 0,
+                observer: '_observeNote'
+            },
+            initialNote: {
+                type: Number,
+                value: 0
+            },
+            oscType: {
+                type: String,
+                value: 'sine',
+                observer: '_observeType'
+            },
+            gain: {
+                type: Number,
+                value: 0,
+                observer: '_observeGain'
+            },
+            maxFrequency: {
+                type: Number,
+                value: 1200
+            },
+            /** OUTPUTS */
+            /** PRIVATE */
+            _audioContext: {
+                type: Object
+            },
+            _gainNode: {
+                type: Object
+            },
+            _oscNode: {
+                type: Object
+            }
+
+        };
+    }
+    connectedCallback () {
+        super.connectedCallback();
+        console.log('Oscillator started');
+        let AudioContext = (window.AudioContext || window.webkitAudioContext),
+            context = window.audioContext || new AudioContext(),
+            gainNode = context.createGain(),
+            oscNode = context.createOscillator();
+
+        this.set('_audioContext', context);
+        this.set('_gainNode', gainNode);
+        this.set('_oscNode', oscNode);
+
+        this._gainNode.gain.value = this.gain;
+        this._oscNode.type = this.oscType;
+        this._setNote(this.note);
+        this._gainNode.connect(this._audioContext.destination);
+        this._oscNode.connect(this._gainNode);
+        this._oscNode.start(0);
+    }
+    _setNote (note) {
+        let frequency = ( this.initialNote + note ) * this.maxFrequency;
+        console.log('note', typeof this.initialNote, note, this.maxFrequency, frequency);
+        frequency = Math.max(0, frequency);
+        frequency = Math.min(this.maxFrequency, frequency);
+        this._oscNode.frequency.setValueAtTime(frequency, 0);
+    }
+    _changeInitialNote (e) {
+        this.set('initialNote', parseFloat(e.path[0].value));
+    }
+    _changeNote (e) {
+        this.set('note', parseFloat(e.path[0].value));
+    }
+    _changeGain (e) {
+        this.set('gain', parseFloat(e.path[0].value));
+    }
+    _changeType (e) {
+        this.set('gain', e.path[0].value);
+    }
+
+    _observeNote (current, previous) {
+        if (!this._oscNode) {
+            return;
+        }
+        this._setNote(current);
+    }
+    _observeGain (current, previous) {
+        if (!this._gainNode) {
+            return;
+        }
+        this._gainNode.gain.value = current;
+    }
+    _observeType (current, previous) {
+        if (!this._oscNode) {
+            return;
+        }
+        this._oscNode.type = current;
+    }
+
+}
+
+window.customElements.define(FabOscillator.is, FabOscillator);
+</script>
+</dom-module>

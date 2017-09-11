@@ -2,6 +2,7 @@
 <link rel="import" href="components/fab-clock/fab-clock.html">
 <link rel="import" href="components/fab-turing-machine/fab-turing-machine.html">
 <link rel="import" href="components/fab-midi-out/fab-midi-out.html">
+<link rel="import" href="components/fab-oscillator/fab-oscillator.html">
 
 <dom-module id="fabulous-instruments">
   <template>
@@ -18,6 +19,9 @@
     <fab-midi-out gate="[[turingMachinePulseOut]]"
                   note="[[turingMachineNoteOut]]">
                   </fab-midi-out>
+    <fab-oscillator note="[[turingMachineNoteOut]]"
+                    gain="[[turingMachinePulseOut]]">
+                    </fab-oscillator>
   </template>
 
   <script>
