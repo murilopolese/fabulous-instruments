@@ -1,0 +1,57 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<script>
+
+    class Clock extends Polymer.Element {
+        static get properties() {
+            return {
+                /** INPUTS */
+                bpm: {
+                    type: Number,
+                    value: 0.5
+                },
+                /** OUTPUT */
+                gate: {
+                    type: Number,
+                    value: 0,
+                    notify: true
+                },
+                /** PRIVATE */
+                _bpm: {
+                    type: Number,
+                    computed: '_computeBpm(bpm)',
+                    observer: '_observeBpm'
+                },
+                _interval: {
+                    type: Number,
+                    value: 0
+                }
+            }
+        }
+        created () {
+            console.log('aha')
+        }
+        _setInterval () {
+            clearInterval(this._interval);
+            let delay = (60 * 1000) / (4 * this._bpm),
+            interval = setInterval(() => {
+                if (this.gate > 0.5) {
+                    this.set('gate', 0);
+                } else {
+                    this.set('gate', 1);
+                }
+            }, delay);
+            this.set('_interval', interval);
+        }
+        _computeBpm (bpm) {
+            return parseInt(bpm * 240)
+        }
+        _observeBpm (bpm) {
+            this._setInterval();
+        }
+        _changeBpm (e) {
+            this.set('bpm', e.path[0].value);
+        }
+
+    }
+</script>

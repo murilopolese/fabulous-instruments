@@ -1,0 +1,45 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../behaviors/clock.html">
+
+<dom-module id="fab-clock">
+    <template>
+        <style>
+
+        </style>
+        <paper-card>
+            <div class="card-content">
+                This is a card content
+            </div>
+            <div class="card-actions">
+                <div class="horizontal justified">
+                  <paper-icon-button icon="icons:event"></paper-icon-button>
+                  <paper-button>5:30PM</paper-button>
+                  <paper-button>7:30PM</paper-button>
+                  <paper-button>9:00PM</paper-button>
+                  <paper-button class="cafe-reserve">Reserve</paper-button>
+                </div>
+              </div>
+        </paper-card>
+    </template>
+
+    <script>
+    /**
+    * `fab-clock`
+    * Clock generator
+    *
+    * @customElement
+    * @polymer
+    * @demo demo/index.html
+    */
+    class FabClock extends Clock {
+        static get is() { return 'fab-clock'; }
+        connectedCallback () {
+            super.connectedCallback();
+            console.log('Clock started');
+            this._setInterval();
+        }
+    }
+
+    window.customElements.define(FabClock.is, FabClock);
+    </script>
+</dom-module>
