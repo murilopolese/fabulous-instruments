@@ -1,0 +1,49 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../behaviors/sequencer.html">
+<link rel="import" href="fab-led.html">
+
+<dom-module id="fab-gate-sequencer">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <p>Step count ([[stepCount]])</p>
+        <paper-slider pin="" min="1" max="32" value="{{stepCount}}" step="1"></paper-slider>
+        <dom-repeat>
+            <template is="dom-repeat" items="[[steps]]" restamp>
+                <fab-led value="[[item]]" on-tap="_toggle"></fab-led>
+            </template>
+        </dom-repeat>
+    </template>
+
+    <script>
+        /**
+         * `fab-gate-sequencer`
+         * Fabulous web instrument
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/index.html
+         */
+         class FabGateSequencer extends Polymer.GestureEventListeners(Sequencer) {
+             static get is() { return 'fab-gate-sequencer'; }
+             static get properties() {
+                 return {
+                 };
+             }
+             _toggle (e) {
+                let index = e.model.index;
+                if (this.steps[index] < this.threshold) {
+                    this.set(`steps.${index}`, 1);
+                } else {
+                    this.set(`steps.${index}`, 0);
+                }
+             }
+         }
+
+        window.customElements.define(FabGateSequencer.is, FabGateSequencer);
+    </script>
+</dom-module>

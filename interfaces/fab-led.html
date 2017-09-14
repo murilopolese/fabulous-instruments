@@ -1,0 +1,74 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="fab-led">
+    <template>
+        <style>
+            :host {
+                display: inline-block;
+            }
+            .led {
+                width: 10px;
+                height: 10px;
+                position: relative;
+                margin: 0;
+                overflow: 0;
+                padding: 0;
+            }
+            .led .fill {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+            }
+            .red {
+                border: solid 1px var(--google-red-500);
+            }
+            .green {
+                border: solid 1px var(--google-green-500);
+            }
+            .blue {
+                border: solid 1px var(--paper-indigo-500);
+            }
+            .red .fill {
+                background: var(--google-red-500);
+            }
+            .green .fill {
+                background: var(--google-green-500);
+            }
+            .blue .fill {
+                background: var(--paper-indigo-500);
+            }
+        </style>
+        <div class$="led [[color]]">
+            <div class="fill" style="opacity: [[value]]"></div>
+        </div>
+    </template>
+    <script>
+        /**
+         * `fab-led`
+         * Fabulous web instrument
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/index.html
+         */
+         class FabLed extends Polymer.Element {
+             static get is() { return 'fab-led'; }
+             static get properties() {
+                 return {
+                     color: {
+                         type: String,
+                         value: 'blue'
+                     },
+                     value: {
+                         type: Number,
+                         value: 0
+                     }
+                 };
+             }
+         }
+
+        window.customElements.define(FabLed.is, FabLed);
+    </script>
+</dom-module>
