@@ -1,5 +1,8 @@
 <link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="bower_components/paper-range-slider/paper-range-slider.html">
+<link rel="import" href="bower_components/paper-slider/paper-slider.html">
 <link rel="import" href="interfaces/fab-map.html">
+<link rel="import" href="interfaces/fab-clock.html">
 
 <dom-module id="fabulous-instruments">
     <template>
@@ -8,10 +11,12 @@
                 display: block;
             }
         </style>
-        <h2>Hello [[testOutput]]!</h2>
-        <fab-map input="[[testValue]]"
+        <fab-clock gate="{{clockGate}}"></fab-clock>
+        <p>Map clock gate output</p>
+        <fab-map input="[[clockGate]]"
                  output="{{testOutput}}">
                  </fab-map>
+        <p>[[testOutput]]</p>
     </template>
 
     <script>
@@ -27,16 +32,15 @@
              static get is() { return 'fabulous-instruments'; }
              static get properties() {
                  return {
-                     testValue: {
+                     testOutput: {
                          type: Number,
                          value: 0
-                     }
+                     },
                  };
              }
              connectedCallback () {
                  super.connectedCallback();
-                 setInterval(() => { this.set('testValue', this.testValue+0.0001)}, 1000);
-                 console.log('started');
+                 console.log('Fabulous instruments started');
              }
          }
 

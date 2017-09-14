@@ -1,0 +1,39 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../behaviors/clock.html">
+
+<dom-module id="fab-clock">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <p>Clock frequency (Hz)</p>
+        <paper-slider pin="" value="{{frequency}}" min="0.01" max="16" step="[[step]]"></paper-slider>
+    </template>
+
+    <script>
+        /**
+         * `fab-clock`
+         * Fabulous web instrument
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/index.html
+         */
+         class FabClock extends Clock {
+             static get is() { return 'fab-clock'; }
+             static get properties() {
+                 return {
+                     step: {
+                         type: Number,
+                         value: 0.01
+                     }
+                 };
+             }
+         }
+
+        window.customElements.define(FabClock.is, FabClock);
+    </script>
+</dom-module>

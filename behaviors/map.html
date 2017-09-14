@@ -4,26 +4,50 @@
     class Map extends Polymer.Element {
         static get properties() {
             return {
+                /**
+                 * Number to be mapped out.
+                 * @type {Number}
+                 */
                 input: {
                     type: Number,
                     value: 0
                 },
+                /**
+                 * Minimum value for the input.
+                 * @type {Number}
+                 */
                 minInput: {
                     type: Number,
                     value: 0
                 },
+                /**
+                 * Maximum value for the input.
+                 * @type {Number}
+                 */
                 maxInput: {
                     type: Number,
                     value: 1
                 },
+                /**
+                 * Minimum value for the output.
+                 * @type {Number}
+                 */
                 minOutput: {
                     type: Number,
                     value: 0
                 },
+                /**
+                 * Maximum value for the output.
+                 * @type {Number}
+                 */
                 maxOutput: {
                     type: Number,
                     value: 1
                 },
+                /**
+                 * Processed output.
+                 * @type {Number}
+                 */
                 output: {
                     type: Number,
                     notify: true,
@@ -31,6 +55,16 @@
                 }
             }
         }
+        /**
+         * Processes a number input into another number output proportionally
+         * to ranges for both input and output.
+         * @param {Number} input Number to be processed
+         * @param {Number} minInput Minimum value for the input
+         * @param {Number} maxInput Maximum value for the input
+         * @param {Number} minOutput Minimum value for the output
+         * @param {Number} maxOutput Maximum value for the output
+         * @return {Number} Processed number
+         */
         _calculateOutput (input, minInput, maxInput, minOutput, maxOutput) {
             return (input - minInput) * (maxOutput - minOutput) / (maxInput - minInput) + minOutput;
         }

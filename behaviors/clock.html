@@ -1,0 +1,91 @@
+<link rel="import" href="../../polymer/polymer-element.html">
+
+<script>
+    class Clock extends Polymer.Element {
+        static get properties() {
+            return {
+                /**
+                 * Interval between clock gates in Hertz.
+                 * @type {Number}
+                 */
+                frequency: {
+                    type: Number,
+                    value: 1
+                },
+                /**
+                 * Between the clock gates, how long it will be in the Maximum
+                 * value before dropping to the minimum value. This is a
+                 * proportion (0 is 0%, 1 is 100%) of the gate length.
+                 * @type {Number}
+                 */
+                pwm: {
+                    type: Number,
+                    value: 0.5
+                },
+                /**
+                 * Output line for the clock. This values switches from 0 to 1
+                 * in the given `frequency`.
+                 * @type {Number}
+                 */
+                gate: {
+                    type: Number,
+                    value: 0,
+                    notify: true
+                },
+                /**
+                 * Holds the interval id to be able to clear it.
+                 * @type {Number}
+                 */
+                _intervalId: {
+                    type: Number,
+                    value: 0
+                },
+                _clockLength: {
+                    type: Number,
+                    computed: '_computeClockLength(frequency)'
+                },
+                _gateLength: {
+                    type: Number,
+                    computed: '_computeGateLength(_clockLength, pwm)'
+                }
+            }
+        }
+        connectedCallback () {
+            this.clockStart();
+        }
+        _computeClockLength (frequency) {
+            return (1000) / frequency;
+        }
+        _computeGateLength (clockLength, pwm) {
+            return clockLength * pwm;
+        }
+        clockStart() {
+            clearInterval(this._intervalId);
+            /**
+             * Turn gate output to high and schedule the event to turn it
+             * low after `_gateLength`
+            */
+            this.set('gate', 1);
+            this.set(
+                '_intervalId',
+                setTimeout(() => {
+
+                    /**
+                     * Turn gate output to low and schedule the event to turn it
+                     * high in the remaining time between the clock length and
+                     * the gate length
+                    */
+                    this.set('gate', 0);
+                    this.set(
+                        '_intervalId',
+                        setTimeout(() => {
+                            this.clockStart();
+                        }, (this._clockLength - this._gateLength) )
+                    );
+
+                }, this._gateLength)
+            );
+        }
+    }
+
+</script>

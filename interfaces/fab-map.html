@@ -9,10 +9,11 @@
                 display: block;
             }
         </style>
-        <paper-range-slider min="{{minInput}}"
+        <paper-range-slider pin="" min="{{minInput}}"
                             max="{{maxInput}}"
                             value-min="{{minOutput}}"
-                            value-max="{{maxOutput}}">
+                            value-max="{{maxOutput}}"
+                            step="[[step]]">
                             </paper-range-slider>
     </template>
 
@@ -31,7 +32,7 @@
                  return {
                      step: {
                          type: Number,
-                         value: 0.00001
+                         value: 0.001
                      }
                  };
              }
