@@ -1,0 +1,42 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-range-slider/paper-range-slider.html">
+<link rel="import" href="../behaviors/map.html">
+
+<dom-module id="fab-map">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <paper-range-slider min="{{minInput}}"
+                            max="{{maxInput}}"
+                            value-min="{{minOutput}}"
+                            value-max="{{maxOutput}}">
+                            </paper-range-slider>
+    </template>
+
+    <script>
+        /**
+         * `fab-map`
+         * Fabulous web instrument
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/index.html
+         */
+         class FabMap extends Map {
+             static get is() { return 'fab-map'; }
+             static get properties() {
+                 return {
+                     step: {
+                         type: Number,
+                         value: 0.00001
+                     }
+                 };
+             }
+         }
+
+        window.customElements.define(FabMap.is, FabMap);
+    </script>
+</dom-module>

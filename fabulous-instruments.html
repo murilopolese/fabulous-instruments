@@ -1,46 +1,45 @@
-<link rel="import" href="../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="components/fab-clock/fab-clock.html">
-<link rel="import" href="components/fab-turing-machine/fab-turing-machine.html">
-<link rel="import" href="components/fab-midi-out/fab-midi-out.html">
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="interfaces/fab-map.html">
 
 <dom-module id="fabulous-instruments">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <fab-clock gate="{{clockGateOut}}"></fab-clock>
-    <fab-turing-machine clock="[[clockGateOut]]"
-                        pulse="{{turingMachinePulseOut}}"
-                        note="{{turingMachineNoteOut}}">
-                        </fab-turing-machine>
-    <fab-midi-out gate="[[turingMachinePulseOut]]"
-                  note="[[turingMachineNoteOut]]">
-                  </fab-midi-out>
-  </template>
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <h2>Hello [[testOutput]]!</h2>
+        <fab-map input="[[testValue]]"
+                 output="{{testOutput}}">
+                 </fab-map>
+    </template>
 
-  <script>
-    /**
-     * `fabulous-instruments`
-     * Modular web instruments
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
-    class FabulousInstruments extends Polymer.Element {
-      static get is() { return 'fabulous-instruments'; }
-      static get properties() {
-        return {
-          prop1: {
-            type: String,
-            value: 'fabulous-instruments'
-          }
-        };
-      }
-    }
+    <script>
+        /**
+         * `fabulous-instruments`
+         * Fabulous web instrument
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/index.html
+         */
+         class FabulousInstruments extends Polymer.Element {
+             static get is() { return 'fabulous-instruments'; }
+             static get properties() {
+                 return {
+                     testValue: {
+                         type: Number,
+                         value: 0
+                     }
+                 };
+             }
+             connectedCallback () {
+                 super.connectedCallback();
+                 setInterval(() => { this.set('testValue', this.testValue+0.0001)}, 1000);
+                 console.log('started');
+             }
+         }
 
-    window.customElements.define(FabulousInstruments.is, FabulousInstruments);
-  </script>
+        window.customElements.define(FabulousInstruments.is, FabulousInstruments);
+    </script>
 </dom-module>

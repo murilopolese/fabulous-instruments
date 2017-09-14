@@ -1,0 +1,38 @@
+<link rel="import" href="../../polymer/polymer-element.html">
+
+<script>
+    class Map extends Polymer.Element {
+        static get properties() {
+            return {
+                input: {
+                    type: Number,
+                    value: 0
+                },
+                minInput: {
+                    type: Number,
+                    value: 0
+                },
+                maxInput: {
+                    type: Number,
+                    value: 1
+                },
+                minOutput: {
+                    type: Number,
+                    value: 0
+                },
+                maxOutput: {
+                    type: Number,
+                    value: 1
+                },
+                output: {
+                    type: Number,
+                    notify: true,
+                    computed: '_calculateOutput(input, minInput, maxInput, minOutput, maxOutput)'
+                }
+            }
+        }
+        _calculateOutput (input, minInput, maxInput, minOutput, maxOutput) {
+            return (input - minInput) * (maxOutput - minOutput) / (maxInput - minInput) + minOutput;
+        }
+    }
+</script>
