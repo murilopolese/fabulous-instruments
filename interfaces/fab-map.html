@@ -9,12 +9,6 @@
                 display: block;
             }
         </style>
-        <paper-range-slider pin="" min="{{minInput}}"
-                            max="{{maxInput}}"
-                            value-min="{{minOutput}}"
-                            value-max="{{maxOutput}}"
-                            step="[[step]]">
-                            </paper-range-slider>
     </template>
 
     <script>
@@ -29,12 +23,7 @@
          class FabMap extends Map {
              static get is() { return 'fab-map'; }
              static get properties() {
-                 return {
-                     step: {
-                         type: Number,
-                         value: 0.001
-                     }
-                 };
+                 return {};
              }
          }
 

@@ -7,7 +7,7 @@
                 steps: {
                     type: Array,
                     value: () => {
-                        return [1,0,0,0,1,0,0,0];
+                        return [1,0,1,0,1,0,1,0];
                     },
                     notify: true
                 },
@@ -38,7 +38,8 @@
             }
         }
         _observeGate (current, previous) {
-            if (current > this.threshold && previous < this.threshold) {
+            // if (current > this.threshold && previous < this.threshold) {
+            if (current > this.threshold) {
                 let nextStep = (this.stepIndex + 1) % this.stepCount;
                 this.set('stepIndex', nextStep);
             }

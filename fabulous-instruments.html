@@ -7,6 +7,7 @@
 <link rel="import" href="interfaces/fab-clock.html">
 <link rel="import" href="interfaces/fab-led.html">
 <link rel="import" href="interfaces/fab-gate-sequencer.html">
+<link rel="import" href="interfaces/fab-pitch-sequencer.html">
 
 <dom-module id="fabulous-instruments">
     <template>
@@ -22,8 +23,19 @@
             <div class="card-content">
                 <fab-clock gate="{{clockGate}}"></fab-clock>
                 <p>Map clock gate output</p>
+                <paper-range-slider pin=""
+                                    min="0"
+                                    max="1"
+                                    value-min="{{clockMinOutput}}"
+                                    value-max="{{clockMaxOutput}}"
+                                    step="0.001">
+                                    </paper-range-slider>
                 <fab-map input="[[clockGate]]"
-                         output="{{clockGateMapped}}">
+                         output="{{clockGateMapped}}"
+                         min-input="0"
+                         max-input="1"
+                         min-output="[[clockMinOutput]]"
+                         max-output="[[clockMaxOutput]]">
                          </fab-map>
                 <fab-led value="[[clockGateMapped]]"></fab-led>
             </div>
@@ -37,8 +49,30 @@
         </paper-card>
         <paper-card>
             <div class="card-content">
-                <fab-gate-sequencer gate="[[gateSequencer1Output]]" output="{{gateSequencer2Output}}"></fab-gate-sequencer>
+                <fab-gate-sequencer gate="[[clockGateMapped]]" output="{{gateSequencer2Output}}"></fab-gate-sequencer>
                 <fab-led value="[[gateSequencer2Output]]"></fab-led>
+            </div>
+        </paper-card>
+
+        <paper-card>
+            <div class="card-content">
+                <fab-pitch-sequencer gate="[[gateSequencer2Output]]" output="{{pitchSequencer1Output}}"></fab-pitch-sequencer>
+                <fab-led value="[[pitchSequencer1Output]]"></fab-led>
+                <paper-range-slider pin=""
+                                    min="1"
+                                    max="127"
+                                    value-min="{{pitchSeqMinOut}}"
+                                    value-max="{{pitchSeqMaxOut}}"
+                                    step="1">
+                                    </paper-range-slider>
+                <fab-map input="[[pitchSequencer1Output]]"
+                         output="{{pitchSequencer1MappedOutput}}"
+                         step="1"
+                         min-input="0"
+                         max-input="1"
+                         min-output="[[pitchSeqMinOut]]"
+                         max-output="[[pitchSeqMaxOut]]">
+                         </fab-map>
             </div>
         </paper-card>
     </template>
