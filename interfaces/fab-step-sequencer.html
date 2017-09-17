@@ -3,7 +3,7 @@
 <link rel="import" href="../behaviors/sequencer.html">
 <link rel="import" href="fab-led.html">
 
-<dom-module id="fab-pitch-sequencer">
+<dom-module id="fab-step-sequencer">
     <template>
         <style>
             :host {
@@ -22,15 +22,15 @@
 
     <script>
         /**
-         * `fab-pitch-sequencer`
+         * `fab-step-sequencer`
          * Fabulous web instrument
          *
          * @customElement
          * @polymer
          * @demo demo/index.html
          */
-         class FabPitchSequencer extends Polymer.GestureEventListeners(Sequencer) {
-             static get is() { return 'fab-pitch-sequencer'; }
+         class FabStepSequencer extends Polymer.GestureEventListeners(Sequencer) {
+             static get is() { return 'fab-step-sequencer'; }
              static get properties() {
                  return {
                  };
@@ -45,6 +45,6 @@
              }
          }
 
-        window.customElements.define(FabPitchSequencer.is, FabPitchSequencer);
+        window.customElements.define(FabStepSequencer.is, FabStepSequencer);
     </script>
 </dom-module>
