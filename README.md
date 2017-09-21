@@ -31,4 +31,4 @@ Your application is already set up to be tested via [web-component-tester](https
 - Logic gates
 - Envelope/Slope/Function generator
 - LFO
-- Midi in/out
+- Midi in/outl

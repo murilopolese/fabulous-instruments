@@ -1,65 +1,23 @@
 <link rel="import" href="bower_components/polymer/polymer-element.html">
 <link rel="import" href="bower_components/paper-styles/paper-styles.html">
-<link rel="import" href="bower_components/paper-range-slider/paper-range-slider.html">
 <link rel="import" href="bower_components/paper-slider/paper-slider.html">
 <link rel="import" href="bower_components/paper-card/paper-card.html">
-<link rel="import" href="interfaces/fab-map.html">
-<link rel="import" href="interfaces/fab-clock.html">
-<link rel="import" href="interfaces/fab-led.html">
-<link rel="import" href="interfaces/fab-gate-sequencer.html">
-<link rel="import" href="interfaces/fab-step-sequencer.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="instruments/fab-clock.html">
+
 
 <dom-module id="fabulous-instruments">
     <template>
         <style>
             :host {
-                display: block;
+                display: flex;
                 @apply --paper-font-common-base;
                 font-size: 14px;
                 margin: 0;
             }
         </style>
-        <paper-card>
-            <div class="card-content">
-                <fab-clock gate="{{clockGate}}"></fab-clock>
-                <p>Map clock gate output</p>
-                <paper-range-slider pin=""
-                                    min="0"
-                                    max="1"
-                                    value-min="{{clockMinOutput}}"
-                                    value-max="{{clockMaxOutput}}"
-                                    step="0.001">
-                                    </paper-range-slider>
-                <fab-map input="[[clockGate]]"
-                         output="{{clockGateMapped}}"
-                         min-input="0"
-                         max-input="1"
-                         min-output="[[clockMinOutput]]"
-                         max-output="[[clockMaxOutput]]">
-                         </fab-map>
-                <fab-led value="[[clockGateMapped]]"></fab-led>
-            </div>
-        </paper-card>
-
-        <paper-card>
-            <div class="card-content">
-                <fab-gate-sequencer gate="[[clockGateMapped]]" output="{{gateSequencer1Output}}"></fab-gate-sequencer>
-                <fab-led value="[[gateSequencer1Output]]"></fab-led>
-            </div>
-        </paper-card>
-        <paper-card>
-            <div class="card-content">
-                <fab-gate-sequencer gate="[[clockGateMapped]]" output="{{gateSequencer2Output}}"></fab-gate-sequencer>
-                <fab-led value="[[gateSequencer2Output]]"></fab-led>
-            </div>
-        </paper-card>
-
-        <paper-card>
-            <div class="card-content">
-                <fab-step-sequencer gate="[[gateSequencer2Output]]" output="{{stepSequencer1Output}}"></fab-step-sequencer>
-                <fab-led value="[[stepSequencer1Output]]"></fab-led>
-            </div>
-        </paper-card>
+        <fab-clock></fab-clock>
     </template>
 
     <script>
