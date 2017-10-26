@@ -1,0 +1,79 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+<link rel="import" href="../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../behaviors/sequencer.html">
+
+<dom-module id="fab-sequencer">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+            .container {
+                display: flex;
+                flex-direction: row;
+            }
+            .steps,
+            .notes,
+            .gates {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+            .step {
+                width: 1em;
+                height: 1em;
+                border-radius: 1em;
+            }
+            .active-step {
+                background: var(--paper-indigo-500);
+            }
+        </style>
+        <p>Sequencer</p>
+        <div class="container">
+            <div class="steps">
+                <template is="dom-repeat" items="[[notes]]">
+                    <div class$="step [[_activeStepClass(currentStep, index)]]"></div>
+                </template>
+            </div>
+            <div class="notes">
+                <template is="dom-repeat" items="[[notes]]">
+                    <paper-slider pin="" value="{{item}}" min="0.01" max="1" step="[[step]]"></paper-slider>
+                </template>
+            </div>
+            <div class="gates">
+                <template is="dom-repeat" items="[[activeSteps]]">
+                    <paper-toggle-button checked="{{item}}"></paper-toggle-button>
+                </template>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        /**
+         * `fab-sequencer`
+         * Fabulous web instrument
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/index.html
+         */
+         class FabSequencer extends Sequencer {
+             static get is() { return 'fab-sequencer'; }
+             static get properties() {
+                 return {
+                     step: {
+                         type: Number,
+                         value: 0.01
+                     }
+                 };
+             }
+             _activeStepClass(currentStep, activeStep) {
+                 return (currentStep == activeStep) ? 'active-step' : '';
+             }
+         }
+
+        window.customElements.define(FabSequencer.is, FabSequencer);
+    </script>
+</dom-module>

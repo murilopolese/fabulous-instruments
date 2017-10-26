@@ -3,6 +3,7 @@
 <link rel="import" href="bower_components/paper-slider/paper-slider.html">
 <link rel="import" href="interfaces/fab-map.html">
 <link rel="import" href="interfaces/fab-clock.html">
+<link rel="import" href="interfaces/fab-sequencer.html">
 
 <dom-module id="fabulous-instruments">
     <template>
@@ -13,10 +14,19 @@
         </style>
         <fab-clock gate="{{clockGate}}"></fab-clock>
         <p>Map clock gate output</p>
-        <fab-map input="[[clockGate]]"
-                 output="{{testOutput}}">
-                 </fab-map>
+        <fab-map
+            input="[[clockGate]]"
+            output="{{testOutput}}">
+        </fab-map>
         <p>[[testOutput]]</p>
+        <fab-sequencer
+            length="8"
+            gate-in="[[clockGate]]"
+            note-out="{{sequencerNote}}"
+            gate-out="{{sequencerGate}}">
+        </fab-sequencer>
+        <p>Note out: [[sequencerNote]]</p>
+        <p>Gate out: [[sequencerGate]]</p>
     </template>
 
     <script>

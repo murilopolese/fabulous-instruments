@@ -1,0 +1,154 @@
+<link rel="import" href="../../polymer/polymer-element.html">
+
+<script>
+    class Sequencer extends Polymer.Element {
+        static get properties() {
+            return {
+                /**
+                 * Current step on the sequence
+                 * @type {Number}
+                 */
+                currentStep: {
+                    type: Number,
+                    value: 0
+                },
+                /**
+                 * Sequence length
+                 * @type {Number}
+                 */
+                length: {
+                    type: Number,
+                    value: 8
+                },
+                /**
+                 * Notes on the sequence. Values from `0` to `1`.
+                 * @type {Array}
+                 */
+                notes: {
+                    type: Array,
+                    value: () => {
+                        return []
+                    }
+                },
+                /**
+                 * Active steps on the sequence. Values are booleans.
+                 * @type {Array}
+                 */
+                activeSteps: {
+                    type: Array,
+                    value: () => {
+                        return []
+                    }
+                },
+                /**
+                 * Gate input line.
+                 * @type {Number}
+                 */
+                gateIn: {
+                    type: Number,
+                    value: 0,
+                    observer: '_observeGate'
+                },
+                /**
+                 * Threshold value to compute if `gateIn` is rising.
+                 * @type {Number}
+                 */
+                gateThreshold: {
+                    type: Number,
+                    value: 0.5
+                },
+                /**
+                 * Reset input line.
+                 * @type {Number}
+                 */
+                reset: {
+                    type: Number,
+                    value: 0,
+                    observer: '_observeReset'
+                },
+                /**
+                 * Threshold value to compute if `reset` is rising.
+                 * @type {Number}
+                 */
+                resetThreshhold: {
+                    type: Number,
+                    value: 0.5
+                },
+                /**
+                 * Current value from the `activeSteps` for the `currentStep`
+                 * @type {Number}
+                 */
+                gateOut: {
+                    type: Number,
+                    computed: '_computeGateOut(currentStep)',
+                    notify: true
+                },
+                /**
+                 * Current value from the `notes` for the `currentStep`
+                 * @type {Number}
+                 */
+                noteOut: {
+                    type: Number,
+                    computed: '_computeNoteOut(currentStep)',
+                    notify: true
+                }
+            }
+        }
+
+        connectedCallback () {
+            super.connectedCallback();
+            // Fill `notes` with random values and `activeSteps` with `1`.
+            let notes = [],
+                activeSteps = [];
+            for (let i = 0; i < this.length; i++) {
+                notes.push(Math.random());
+                activeSteps.push(Math.random()>0.5);
+            }
+            this.set('notes', notes);
+            this.set('activeSteps', activeSteps);
+        }
+
+        /**
+         * Observer for the `gate` input line. Increments `currentStep` on
+         * rising edge.
+         * @param {Number} newGate New value from `gate` input line
+         * @param {Number} oldGate Old value from `gate` input line
+         */
+        _observeGate (newGate, oldGate) {
+            // Rising value
+            if (oldGate < this.gateThreshold && newGate > this.gateThreshold) {
+                let nextStep = (this.currentStep + 1) % this.length;
+                this.set('currentStep', nextStep);
+            }
+        }
+
+        /**
+         * Observer for the `reset` input line. Sets the `currentStep` to `0`
+         * on rising edge.
+         * @param {Number} newReset New value from `reset` input line
+         * @param {Number} oldReset Old value from `reset` input line
+         */
+        _observeReset (newReset, oldReset) {
+            // Rising value
+            if (oldReset < this.resetThreshold && newReset > this.resetThreshold) {
+                this.set('currentStep', 0);
+            }
+        }
+
+        /**
+         * Compute the value for the `activeSteps` based on the `currentStep`.
+         * @param {Number} currentStep Current step.
+         */
+        _computeGateOut (currentStep) {
+            return this.activeSteps[currentStep];
+        }
+
+        /**
+         * Compute the value for the `notes` based on the `currentStep`.
+         * @param {Number} currentStep Current step.
+         */
+        _computeNoteOut (currentStep) {
+            return this.notes[currentStep]
+        }
+    }
+</script>

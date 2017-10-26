@@ -4,7 +4,9 @@
   "main": "fabulous-instruments.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
-    "paper-range-slider": "git://github.com/IftachSadeh/paper-range-slider#^1.0.1"
+    "paper-range-slider": "git://github.com/IftachSadeh/paper-range-slider#^1.0.1",
+    "paper-toggle-button": "^2.0.0",
+    "paper-styles": "^2.0.0"
   },
   "devDependencies": {
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",

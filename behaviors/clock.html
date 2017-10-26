@@ -23,7 +23,7 @@
                     value: 0.5
                 },
                 /**
-                 * Output line for the clock. This values switches from 0 to 1
+                 * Output for the clock. This values switches from 0 to 1
                  * in the given `frequency`.
                  * @type {Number}
                  */
@@ -51,6 +51,7 @@
             }
         }
         connectedCallback () {
+            super.connectedCallback();
             this.clockStart();
         }
         _computeClockLength (frequency) {
