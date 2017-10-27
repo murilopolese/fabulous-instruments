@@ -51,7 +51,7 @@
                 output: {
                     type: Number,
                     notify: true,
-                    computed: '_calculateOutput(input, minInput, maxInput, minOutput, maxOutput)'
+                    computed: '_computeOutput(input, minInput, maxInput, minOutput, maxOutput)'
                 }
             }
         }
@@ -65,7 +65,7 @@
          * @param {Number} maxOutput Maximum value for the output
          * @return {Number} Processed number
          */
-        _calculateOutput (input, minInput, maxInput, minOutput, maxOutput) {
+        _computeOutput (input, minInput, maxInput, minOutput, maxOutput) {
             return (input - minInput) * (maxOutput - minOutput) / (maxInput - minInput) + minOutput;
         }
     }

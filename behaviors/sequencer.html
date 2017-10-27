@@ -4,6 +4,7 @@
     class Sequencer extends Polymer.Element {
         static get properties() {
             return {
+<<<<<<< HEAD
                 /**
                  * Current step on the sequence
                  * @type {Number}
@@ -90,10 +91,42 @@
                 noteOut: {
                     type: Number,
                     computed: '_computeNoteOut(currentStep)',
+=======
+                steps: {
+                    type: Array,
+                    value: () => {
+                        return [0,0,0,0,0,0,0,0];
+                    },
+                    notify: true
+                },
+                stepCount: {
+                    type: Number,
+                    value: 8,
+                    observer: '_observeStepCount'
+                },
+                stepIndex: {
+                    type: Number,
+                    value: 0,
+                    notify: true
+                },
+                gate: {
+                    type: Number,
+                    value: 0,
+                    observer: '_observeGate'
+                },
+                threshold: {
+                    type: Number,
+                    value: 0.5
+                },
+                output: {
+                    type: Number,
+                    computed: '_computeOutput(stepIndex, steps.*)',
+>>>>>>> aae7fada978eade47a70ae8d0e4be30a80c41c52
                     notify: true
                 }
             }
         }
+<<<<<<< HEAD
 
         connectedCallback () {
             super.connectedCallback();
@@ -149,6 +182,27 @@
          */
         _computeNoteOut (currentStep) {
             return this.notes[currentStep]
+=======
+        _observeGate (current, previous) {
+            // if (current > this.threshold && previous < this.threshold) {
+            if (current > this.threshold) {
+                let nextStep = (this.stepIndex + 1) % this.stepCount;
+                this.set('stepIndex', nextStep);
+            }
+        }
+        _observeStepCount (current) {
+            if (current > this.steps.length) {
+                for (let i = this.steps.length; i < current; i++) {
+                    this.push('steps', 0);
+                }
+            } else if (current < this.steps.length) {
+                let extra = this.steps.length - current;
+                this.splice('steps', this.steps.length - extra, extra);
+            }
+        }
+        _computeOutput(index, steps) {
+            return steps.base[index];
+>>>>>>> aae7fada978eade47a70ae8d0e4be30a80c41c52
         }
     }
 </script>

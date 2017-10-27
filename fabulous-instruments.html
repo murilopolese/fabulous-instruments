@@ -1,5 +1,5 @@
 <link rel="import" href="bower_components/polymer/polymer-element.html">
-<link rel="import" href="bower_components/paper-range-slider/paper-range-slider.html">
+<link rel="import" href="bower_components/paper-styles/paper-styles.html">
 <link rel="import" href="bower_components/paper-slider/paper-slider.html">
 <link rel="import" href="interfaces/fab-map.html">
 <link rel="import" href="interfaces/fab-clock.html">
@@ -9,7 +9,10 @@
     <template>
         <style>
             :host {
-                display: block;
+                display: flex;
+                @apply --paper-font-common-base;
+                font-size: 14px;
+                margin: 0;
             }
         </style>
         <fab-clock gate="{{clockGate}}"></fab-clock>
@@ -41,12 +44,7 @@
          class FabulousInstruments extends Polymer.Element {
              static get is() { return 'fabulous-instruments'; }
              static get properties() {
-                 return {
-                     testOutput: {
-                         type: Number,
-                         value: 0
-                     },
-                 };
+                 return {};
              }
              connectedCallback () {
                  super.connectedCallback();

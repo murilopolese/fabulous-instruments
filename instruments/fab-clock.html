@@ -1,0 +1,103 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu-light.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+
+<dom-module id="fab-clock">
+    <template>
+        <style>
+            :host {
+                display: flex;
+                @apply --paper-font-common-base;
+                font-size: 8px;
+                margin: 0;
+                width: 20vw;
+                height: 25vh;
+                /*border: solid 1px var(--google-grey-300);*/
+            }
+            .card {
+                height: 90%;
+                width: 90%;
+                margin: 5%;
+            }
+            .full {
+                width: 100%;
+            }
+            .title {
+                font-size: 12px;
+            }
+            .legend {
+                color: var(--paper-indigo-500);
+                font-weight: 500;
+            }
+            .led {
+                position: relative;
+                width: 1vw;
+                height: 1vw;
+                border-radius: 1vw;
+                display: inline-flex;
+                border: solid 1px var(--paper-indigo-500);
+            }
+            .led.fill {
+                background: var(--paper-indigo-500);
+            }
+            .led.active::after {
+                content: '';
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                width: 1.5vw;
+                height: 1.5vw;
+                border-radius: 1.5vw;
+                transform: translate(-50%, -50%);
+                background: var(--paper-indigo-500);
+            }
+        </style>
+        <paper-card class="card">
+            <div class="card-content">
+                <div class="title">Clock</div>
+                <div class="legend">Frequency</div>
+                <div><input type="range" class="full"></input></div>
+                <div class="legend">Shuffle</div>
+                <div><input type="range" class="full"></input></div>
+                <div class="legend">Division</div>
+                <div>
+                    <select class="full">
+                        <option value="">16th</option>
+                        <option value="">8th</option>
+                    </select>
+                </div>
+                <div style="text-align: center;">
+                    <div class="led fill active"></div>
+                    <div class="led"></div>
+                </div>
+            </div>
+        </paper-card>
+    </template>
+
+    <script>
+        /**
+         * `fab-clock`
+         * Fabulous web instrument
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/index.html
+         */
+         class FabClock extends Polymer.Element {
+             static get is() { return 'fab-clock'; }
+             static get properties() {
+                 return {
+                 };
+             }
+         }
+
+        window.customElements.define(FabClock.is, FabClock);
+    </script>
+</dom-module>
